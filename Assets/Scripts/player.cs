@@ -16,12 +16,12 @@ public class player : MonoBehaviour {
     private bool canattack = false;
     private GameObject m_enemy;
     // Use this for initialization
-    void Start () {
-
+    void Start ()
+    {
+        gameObject.GetComponent<Rigidbody>().freezeRotation = true;
         playerplane = new Plane(Vector3.up, this.transform.position);
         anim = GetComponent<Animation>();
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -64,20 +64,31 @@ public class player : MonoBehaviour {
     }
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "PMP")
+        if (other.tag == "PMP")
         {
             Destroy(other.gameObject);
             move = false;
         }
-        if(other.tag == "Enemy")
+
+    }
+    
+    private void OnCollisionEnter(Collision other)
+    {
+        if(other.transform.tag == "PMP")
+        {
+            Destroy(other.gameObject);
+            move = false;
+        }
+        if(other.transform.tag == "Enemy")
         {
             canattack = true;
             m_enemy = other.gameObject;
+            move = false;
         }
     }
-    private void OnTriggerExit(Collider other)
+    private void OnCollisionExit(Collision other)
     {
-        if (other.tag == "Enemy")
+        if (other.transform.tag == "Enemy")
         {
             canattack = false;
         }
