@@ -67,6 +67,7 @@ public class player : MonoBehaviour {
             }
             else
             {
+                _animator.SetBool("jump", false);
                 _animator.SetBool("run", move.magnitude > 0);
             }
         }
