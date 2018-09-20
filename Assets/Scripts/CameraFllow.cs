@@ -42,7 +42,7 @@ public class CameraFllow : MonoBehaviour
         //初始化旋转角度
         mX = transform.eulerAngles.x;
         mY = transform.eulerAngles.y;
-        mPosition = new Vector3(5.6f, 3.3f, 1.7f);
+         
     }
 
     void LateUpdate()

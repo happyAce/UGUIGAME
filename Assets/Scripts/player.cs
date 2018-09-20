@@ -102,7 +102,7 @@ public class player : MonoBehaviour {
         float turnAmount = Mathf.Atan2(move.x, move.z);
 
         transform.Rotate(0, turnAmount * RotationSpeed * Time.deltaTime, 0);
-        //rotate();
+        //MoveManager(_characterController);
 
         if (_characterController.isGrounded)
         {
@@ -155,6 +155,58 @@ public class player : MonoBehaviour {
         #endregion
 
     }
+    //定义四个方向的枚举值，按照逆时针方向计算
+    protected enum DirectionType
+    {
+        Direction_Forward = 90,
+        Direction_Backward = 270,
+        Direction_Left = 180,
+        Direction_Right = 0
+    }
+    private DirectionType mType = DirectionType.Direction_Forward;
+    void MoveManager(CharacterController mController)
+    {
+        //移动方向
+        Vector3 mDir = Vector3.zero;
+        if (mController.isGrounded)
+        {
+            //将角色旋转到对应的方向
+            if (Input.GetAxis("Vertical") == 1)
+            {
+                SetDirection(DirectionType.Direction_Forward);
+               
+                 
+            }
+            if (Input.GetAxis("Vertical") == -1)
+            {
+                SetDirection(DirectionType.Direction_Backward);
+              
+               
+            }
+            if (Input.GetAxis("Horizontal") == -1)
+            {
+                SetDirection(DirectionType.Direction_Left);
+              
+            }
+            if (Input.GetAxis("Horizontal") == 1)
+            {
+                SetDirection(DirectionType.Direction_Right);
+              
+            }
+
+        }
+    }
+
+    //设置角色的方向，有问题
+    void SetDirection(DirectionType mDir)
+    {
+        if (mType != mDir)
+        {
+            transform.Rotate(Vector3.up * (mType - mDir));
+            mType = mDir;
+        }
+    }
+
     void moving()
     {
         transform.position = Vector3.MoveTowards(transform.position, pmp.transform.position, playermovespeed);
