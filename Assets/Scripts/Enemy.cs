@@ -5,11 +5,15 @@ using UnityEngine;
 public class Enemy : MonoBehaviour {
 
     Animation anim;
-	// Use this for initialization
-	void Start ()
+    Color outlinecolor1;
+    Color outlinecolor2;
+    // Use this for initialization
+    void Start ()
     {
         gameObject.GetComponent<Rigidbody>().freezeRotation = true;
         anim = gameObject.GetComponent<Animation>();
+        outlinecolor1 = new Color(255, 0, 0); // red
+        outlinecolor2 = new Color(0, 255, 127); // green
     }
     // Update is called once per frame
     void Update () {
@@ -18,14 +22,12 @@ public class Enemy : MonoBehaviour {
     
     private void OnMouseOver()
     {
-        Shader sd = Shader.Find("Custom/OutLine2");
-        this.gameObject.GetComponentInChildren<Renderer>().material.shader = sd;
+       
+        
     }
     private void OnMouseExit()
     {
-        Shader sd = Shader.Find("Legacy Shaders/Diffuse");
-        this.gameObject.GetComponentInChildren<Renderer>().material.shader = sd;
-        
+
     }
     private void OnCollisionEnter(Collision collision)
     {
