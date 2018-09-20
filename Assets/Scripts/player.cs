@@ -11,12 +11,14 @@ public class player : MonoBehaviour {
     private GameObject pmp;
     private bool m_move = false;
     private Animator _animator;
+     
+
     private CharacterController _characterController;
     private float Gravity = 20.0f;
     private Vector3 _moveDirection = Vector3.zero;
     public float Speed = 5.0f;
 
-    public float RotationSpeed = 240.0f;
+    public float RotationSpeed = 250.0f;
 
     public float JumpSpeed = 7.0f;
 
@@ -33,8 +35,56 @@ public class player : MonoBehaviour {
         _characterController = GetComponent<CharacterController>();
     }
     // Update is called once per frame
+    
+    void rotate()
+    {
+        if (Input.GetKey(KeyCode.W))
+        {
+            Vector3 e_rot = transform.eulerAngles;
+            e_rot.x = -90;
+            e_rot.y = 0;
+            e_rot.z = 0;
+            transform.eulerAngles = e_rot;
+        }
+        // 按S键，向下移动
+        else if (Input.GetKey(KeyCode.S))
+        {
+            Vector3 eulerAngles = transform.eulerAngles;
+            eulerAngles.x = 90;
+            eulerAngles.y = 0;
+            eulerAngles.z = 180;
+            transform.eulerAngles = eulerAngles;
+             
+        }
+        // 按A键，向左移动
+        else if (Input.GetKey(KeyCode.A))
+        {
+            Vector3 eulerAngles = transform.eulerAngles;
+            eulerAngles.x = 0;
+            eulerAngles.y = -90;
+            eulerAngles.z = 90;
+            transform.eulerAngles = eulerAngles;
+             
+        }
+        // 按D键，向右移动
+        else if (Input.GetKey(KeyCode.D))
+        {
+            Vector3 eulerAngles = transform.eulerAngles;
+            eulerAngles.x = 0;
+            eulerAngles.y = 90;
+            eulerAngles.z = -90;
+            transform.eulerAngles = eulerAngles;
+             
+        }
+
+    }
     void Update()
     {
+        if(Input.GetMouseButtonDown(0))
+        {
+            
+            _animator.SetTrigger("attack1");
+        }
         // Get Input for axis
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
@@ -52,6 +102,7 @@ public class player : MonoBehaviour {
         float turnAmount = Mathf.Atan2(move.x, move.z);
 
         transform.Rotate(0, turnAmount * RotationSpeed * Time.deltaTime, 0);
+        //rotate();
 
         if (_characterController.isGrounded)
         {
@@ -73,9 +124,9 @@ public class player : MonoBehaviour {
         }
 
         _moveDirection.y -= Gravity * Time.deltaTime;
-
         _characterController.Move(_moveDirection * Time.deltaTime);
 
+        #region clickmove
         //////
         //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         //float hitdistance = 0f;
@@ -89,9 +140,9 @@ public class player : MonoBehaviour {
         //        pmp = Instantiate(playermovepoint, moveposition, Quaternion.identity);
         //        m_move = true;
         //    }
-           
+
         //}
-         
+
         //if (m_move)
         //    moving();
         //else
@@ -101,7 +152,8 @@ public class player : MonoBehaviour {
         //    else
         //        _animator.SetBool("param_toidle", true);
         //}
-          
+        #endregion
+
     }
     void moving()
     {
