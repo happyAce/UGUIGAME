@@ -87,9 +87,9 @@
     <Compile Include="Assets\Scripts\otherplayer.cs" />
     <Compile Include="Assets\Scripts\player.cs" />
     <Compile Include="Assets\Scripts\selectoutline.cs" />
-    <None Include="Assets\Shader\outline2.shader" />
-    <None Include="Assets\Shader\outline3.shader" />
-    <None Include="Assets\Shader\outline.shader" />
+    <None Include="Assets\Resources\Shaders\outline2.shader" />
+    <None Include="Assets\Resources\Shaders\outline3.shader" />
+    <None Include="Assets\Resources\Shaders\outline.shader" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>C:/Users/Administrator/Documents/testgame01/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
