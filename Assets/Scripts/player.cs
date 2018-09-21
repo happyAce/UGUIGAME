@@ -17,7 +17,7 @@ public class player : MonoBehaviour {
     private float Gravity = 20.0f;
     private Vector3 _moveDirection = Vector3.zero;
     public float Speed = 5.0f;
-
+    private Vector3 _gravity = Vector3.zero;
     public float RotationSpeed = 250.0f;
 
     public float JumpSpeed = 7.0f;
@@ -33,6 +33,7 @@ public class player : MonoBehaviour {
         playerplane = new Plane(Vector3.up, this.transform.position);
         _animator = GetComponent<Animator>();
         _characterController = GetComponent<CharacterController>();
+        
     }
     // Update is called once per frame
     
@@ -78,54 +79,85 @@ public class player : MonoBehaviour {
         }
 
     }
+    bool attackfinished = true;
+    public void SetAttackFinished()
+    {
+        attackfinished = true;
+        SetJumpFinished();
+      
+    }
+    public void SetJumpFinished()
+    { 
+        if(_animator.GetBool("jump"))
+            _animator.SetBool("jump", false);
+    }
+    
+    private bool mIsControlEnabled = true;
+
+    public void EnableControl()
+    {
+        mIsControlEnabled = true;
+    }
+
+    public void DisableControl()
+    {
+        mIsControlEnabled = false;
+    }
     void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if (mIsControlEnabled)
         {
-            
-            _animator.SetTrigger("attack1");
-        }
-        // Get Input for axis
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
-
-        // Calculate the forward vector
-        Vector3 camForward_Dir = Vector3.Scale(Camera.main.transform.forward, new Vector3(1, 0, 1)).normalized;
-        Vector3 move = v * camForward_Dir + h * Camera.main.transform.right;
-
-        if (move.magnitude > 1f) move.Normalize();
-
-        // Calculate the rotation for the player
-        move = transform.InverseTransformDirection(move);
-
-        // Get Euler angles
-        float turnAmount = Mathf.Atan2(move.x, move.z);
-
-        transform.Rotate(0, turnAmount * RotationSpeed * Time.deltaTime, 0);
-        //MoveManager(_characterController);
-
-        if (_characterController.isGrounded)
-        {
-            _moveDirection = transform.forward * move.magnitude;
-
-            _moveDirection *= Speed;
-
-            if (Input.GetButton("Jump"))
+            if (Input.GetMouseButtonDown(0))
             {
-                _animator.SetBool("jump",true);
-                _moveDirection.y = JumpSpeed;
-
+                _animator.SetTrigger("attack1");
+                attackfinished = false;
             }
+            // Get Input for axis
+            float h = Input.GetAxis("Horizontal");
+            float v = Input.GetAxis("Vertical");
+
+            // Calculate the forward vector
+            Vector3 camForward_Dir = Vector3.Scale(Camera.main.transform.forward, new Vector3(1, 0, 1)).normalized;
+            Vector3 move = v * camForward_Dir + h * Camera.main.transform.right;
+
+            if (move.magnitude > 1f) move.Normalize();
+
+            // Calculate the rotation for the player
+            move = transform.InverseTransformDirection(move);
+
+            // Get Euler angles
+            float turnAmount = Mathf.Atan2(move.x, move.z);
+
+            transform.Rotate(0, turnAmount * RotationSpeed * Time.deltaTime, 0);
+            //MoveManager(_characterController);
+
+            if (_characterController.isGrounded)
+            {
+                _moveDirection = transform.forward * move.magnitude;
+
+                _moveDirection *= Speed;
+                
+                if (Input.GetButton("Jump")&& !_animator.GetBool("jump"))
+                { 
+                    _animator.SetBool("jump", true);
+                        
+                    _moveDirection.y = JumpSpeed;
+                        
+                }
+                else
+                    _animator.SetBool("run", move.magnitude > 0);
+                
+            }
+
+            _moveDirection.y -= Gravity * Time.deltaTime;
+            if (attackfinished)
+                _characterController.Move(_moveDirection * Time.deltaTime);
             else
             {
-                _animator.SetBool("jump", false);
-                _animator.SetBool("run", move.magnitude > 0);
+                _gravity.y = _moveDirection.y;
+                _characterController.Move(_gravity * Time.deltaTime);
             }
         }
-
-        _moveDirection.y -= Gravity * Time.deltaTime;
-        _characterController.Move(_moveDirection * Time.deltaTime);
-
         #region clickmove
         //////
         //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
