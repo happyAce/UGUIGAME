@@ -4,22 +4,59 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour {
 
-    Animation anim;
+    Animator _animator;
     Color outlinecolor1;
     Color outlinecolor2;
+
+    float max_hp = 100.0f;
+    float now_hp = 100.0f;
+    HPbar m_hpbar;
+    public bool IsDead
+    {
+        get
+        {
+            return now_hp == 0 ;
+        }
+    }
+    public void setInit(float maxhp,float nowhp)
+    {
+        max_hp = maxhp;
+        now_hp = nowhp;
+        if(m_hpbar == null)
+            m_hpbar = GetComponent<HPbar>();
+        m_hpbar.SetInit(now_hp, max_hp, this.gameObject.transform);
+    }
     // Use this for initialization
     void Start ()
     {
         gameObject.GetComponent<Rigidbody>().freezeRotation = true;
-        anim = gameObject.GetComponent<Animation>();
+        _animator = GetComponent<Animator>();
         outlinecolor1 = new Color(255, 0, 0); // red
         outlinecolor2 = new Color(0, 255, 127); // green
+        m_hpbar = GetComponent<HPbar>();
+        m_hpbar.SetInit(now_hp, max_hp, this.gameObject.transform);
     }
     // Update is called once per frame
     void Update () {
-        anim.CrossFade("idle");
+         
 	}
     
+    public void hert(float amount)
+    {
+        now_hp -= amount;
+        if (now_hp < 0)
+            now_hp = 0;
+
+        m_hpbar.SetBarValue(now_hp);
+        if(IsDead)
+            Die();
+        else
+            _animator.SetTrigger("damage");
+    }
+    public void Die()
+    {
+        _animator.SetTrigger("dead");
+    }
     private void OnMouseOver()
     {
        

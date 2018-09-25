@@ -84,6 +84,7 @@
     <Compile Include="Assets\SapphiArt\SapphiArtchan\Scripts\SapphiArtChan_AnimManager.cs" />
     <Compile Include="Assets\Scripts\CameraFllow.cs" />
     <Compile Include="Assets\Scripts\Enemy.cs" />
+    <Compile Include="Assets\Scripts\HPbar.cs" />
     <Compile Include="Assets\Scripts\otherplayer.cs" />
     <Compile Include="Assets\Scripts\player.cs" />
     <Compile Include="Assets\Scripts\selectoutline.cs" />

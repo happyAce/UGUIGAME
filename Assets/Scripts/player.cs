@@ -20,7 +20,7 @@ public class player : MonoBehaviour {
     private Vector3 _gravity = Vector3.zero;
     public float RotationSpeed = 250.0f;
 
-    public float JumpSpeed = 7.0f;
+    public float JumpSpeed = 8.0f;
 
 
     //
@@ -84,14 +84,21 @@ public class player : MonoBehaviour {
     {
         attackfinished = true;
         SetJumpFinished();
-      
+        AttackCondition(0.9f);
     }
     public void SetJumpFinished()
     { 
         if(_animator.GetBool("jump"))
             _animator.SetBool("jump", false);
+
+       
     }
-    
+    bool addjumpheight = false;
+    public void SetJumpHeight()
+    {
+        addjumpheight = true;
+    }
+
     private bool mIsControlEnabled = true;
 
     public void EnableControl()
@@ -107,7 +114,7 @@ public class player : MonoBehaviour {
     {
         if (mIsControlEnabled)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && attackfinished)
             {
                 _animator.SetTrigger("attack1");
                 attackfinished = false;
@@ -140,13 +147,15 @@ public class player : MonoBehaviour {
                 if (Input.GetButton("Jump")&& !_animator.GetBool("jump"))
                 { 
                     _animator.SetBool("jump", true);
-                        
-                    _moveDirection.y = JumpSpeed;
-                        
                 }
                 else
                     _animator.SetBool("run", move.magnitude > 0);
-                
+
+                if (addjumpheight)
+                {
+                    _moveDirection.y = JumpSpeed;
+                    addjumpheight = false;
+                }
             }
 
             _moveDirection.y -= Gravity * Time.deltaTime;
@@ -186,6 +195,40 @@ public class player : MonoBehaviour {
         //}
         #endregion
 
+    }
+    //攻击判定
+    private void AttackCondition(float _range)
+    {
+        // 球形射线检测周围怪物，不用循环所有怪物类列表，无法获取“Enemy”类  
+        Collider[] colliderArr = Physics.OverlapSphere(this.gameObject.transform.position, _range, LayerMask.GetMask("Enemy"));
+        for (int i = 0; i < colliderArr.Length; i++)
+        {
+            Vector3 v3 = colliderArr[i].gameObject.transform.position - this.gameObject.transform.position;
+            float angle = Vector3.Angle(v3, this.gameObject.transform.forward);
+            if (CalculateDistance(colliderArr[i].gameObject))
+            {
+                // 距离和角度条件都满足了  
+                Debug.Log("hit:"+ colliderArr[i].gameObject.name);
+                float damagenum = Random.Range(1, 30);
+                colliderArr[i].SendMessage("hert", damagenum, SendMessageOptions.DontRequireReceiver);
+            }
+        }
+    }
+    private bool CalculateDistance(GameObject Target)
+    {
+        float distance = (this.gameObject.transform.position - Target.transform.position).magnitude;
+        Vector3 mfrd = this.gameObject.transform.forward;
+        Vector3 tV3 = Target.transform.position - this.gameObject.transform.position;
+        // mfrd.normalized（归一化）：方向不变，长度归一，用在只关心方向忽略大小情况下（毕竟以单位1计算比使用float类型数计算方便快速嘛）  
+        // Vector3.Dot（点乘）:余弦值；Mathf.Acos()反余弦值(弧度形式表现)  
+        // Mathf.Rad2Deg:弧度转度；Mathf.Deg2Rad：度转弧度  
+        float deg = Mathf.Acos(Vector3.Dot(mfrd.normalized, tV3.normalized)) * Mathf.Rad2Deg;
+        // 一半扇形区域  
+        if (distance < 2f && deg < 120 * 0.5)
+        {
+            return true;
+        }
+        return false;
     }
     //定义四个方向的枚举值，按照逆时针方向计算
     protected enum DirectionType
