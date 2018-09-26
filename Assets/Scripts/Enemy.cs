@@ -56,6 +56,12 @@ public class Enemy : MonoBehaviour {
     public void Die()
     {
         _animator.SetTrigger("dead");
+        Invoke("dieDestory", 2.0f);
+    }
+    void dieDestory()
+    {
+        this.gameObject.SetActive(false);
+        Destroy(this.gameObject);
     }
     private void OnMouseOver()
     {

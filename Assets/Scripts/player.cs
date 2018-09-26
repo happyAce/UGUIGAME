@@ -11,7 +11,10 @@ public class player : MonoBehaviour {
     private GameObject pmp;
     private bool m_move = false;
     private Animator _animator;
-     
+
+    private HPbar m_hpbar;
+    private float max_hp = 100.0f;
+    private float now_hp = 100.0f;
 
     private CharacterController _characterController;
     private float Gravity = 20.0f;
@@ -33,7 +36,8 @@ public class player : MonoBehaviour {
         playerplane = new Plane(Vector3.up, this.transform.position);
         _animator = GetComponent<Animator>();
         _characterController = GetComponent<CharacterController>();
-        
+        m_hpbar = GetComponent<HPbar>();
+        m_hpbar.SetInit(now_hp, max_hp, this.gameObject.transform);
     }
     // Update is called once per frame
     
@@ -209,7 +213,7 @@ public class player : MonoBehaviour {
             {
                 // 距离和角度条件都满足了  
                 Debug.Log("hit:"+ colliderArr[i].gameObject.name);
-                float damagenum = Random.Range(1, 30);
+                float damagenum = Random.Range(10, 30);
                 colliderArr[i].SendMessage("hert", damagenum, SendMessageOptions.DontRequireReceiver);
             }
         }
