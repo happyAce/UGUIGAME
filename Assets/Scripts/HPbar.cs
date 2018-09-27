@@ -44,14 +44,13 @@ public class HPbar : MonoBehaviour {
         hpSlider.value = current_value / max_value;
     }
     // Update is called once per frame
-    Vector3 followPosition;
+   
     void Update ()
     {
         if (target == null)
             return;
-        Vector3 targetpos = target.transform.position;
 
-        hpbar.transform.position = targetpos + offsetpos;
+        hpbar.transform.position = target.transform.position + offsetpos;
 
         if (current_value == 0)
             hpbar.SetActive(false);

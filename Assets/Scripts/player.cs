@@ -129,7 +129,7 @@ public class player : MonoBehaviour {
 
             // Calculate the forward vector
             Vector3 camForward_Dir = Vector3.Scale(Camera.main.transform.forward, new Vector3(1, 0, 1)).normalized;
-            Vector3 move = v * camForward_Dir + h * Camera.main.transform.right;
+            Vector3 move = v * Camera.main.transform.forward + h * Camera.main.transform.right;
 
             if (move.magnitude > 1f) move.Normalize();
 
@@ -157,7 +157,7 @@ public class player : MonoBehaviour {
 
                 if (addjumpheight)
                 {
-                    _moveDirection.y = JumpSpeed;
+                   // _moveDirection.y = JumpSpeed;
                     addjumpheight = false;
                 }
             }
