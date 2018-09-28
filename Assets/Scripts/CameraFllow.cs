@@ -8,7 +8,7 @@ public class CameraFllow : MonoBehaviour
     public Transform target;
 
     //距离
-    public float distance = 5f;
+    public float distance = 8f;
 
     //右键旋转控制部分
     //旋转速度
@@ -30,19 +30,19 @@ public class CameraFllow : MonoBehaviour
 
     //差值控制部分
     //是否启用差值计算
-    public bool isNeedDamping = false;
+    //public bool isNeedDamping = false;
     //差值速度
-    public float dampingSpeed = 10f;
+    //public float dampingSpeed = 10f;
 
     private Quaternion mRotation;
     private Vector3 mPosition;
-
     void Start()
     {
         //初始化旋转角度
-        mX = transform.eulerAngles.x;
-        mY = transform.eulerAngles.y;
-         
+        mX = 0;
+        mY = 30;
+        mRotation = Quaternion.Euler(30, 0, 0);
+        transform.rotation = mRotation;
     }
 
     void LateUpdate()
@@ -67,7 +67,6 @@ public class CameraFllow : MonoBehaviour
             //transform.rotation = Quaternion.Lerp(transform.rotation,mRotation,Time.deltaTime*dampingSpeed);
             //else 
             transform.rotation = mRotation;
-
             //3.对目标物体的状态限定。不是所有的状态都可以旋转的，比如轻功时、战斗时就不可以旋转（去除物体本身旋转的可能）
             //target.rotation = Quaternion.Euler(new Vector3(0, mX, 0));  //注意，这里mx中的X是针对鼠标的，实际上，在X平面上是绕着Y轴旋转
         }
@@ -77,17 +76,15 @@ public class CameraFllow : MonoBehaviour
         distance = Mathf.Clamp(distance, minDistance, maxDistance);
 
         //第三步（功能三）：计算相机位置并进行设定
-        //这里出了个小问题，计算位置的时候，Y轴还是先别动了
         mPosition = mRotation * new Vector3(0.0f, 0.0f, -distance) + target.position;
-        if (isNeedDamping)
-        {
-            transform.position = Vector3.Lerp(transform.position, mPosition, Time.deltaTime * dampingSpeed);
-        }
-        else
-        {
+        //if (isNeedDamping)
+        //{
+        //transform.position = Vector3.MoveTowards(transform.position, mPosition, Time.deltaTime * 10.0f);
+        //}
+        //else
+        //{
             transform.position = mPosition;
-        }
-
+        //}
     }
    
 }

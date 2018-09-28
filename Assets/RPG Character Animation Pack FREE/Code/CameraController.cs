@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CameraController : MonoBehaviour
 {
-	GameObject cameraTarget;
+	public GameObject cameraTarget;
 	public float rotateSpeed;
 	float rotate;
 	public float offsetDistance;
@@ -15,7 +15,7 @@ public class CameraController : MonoBehaviour
 
 	void Start()
 	{
-		cameraTarget = GameObject.FindGameObjectWithTag("Player");
+		//cameraTarget = GameObject.FindGameObjectWithTag("RPG-Character");
 		lastPosition = new Vector3(cameraTarget.transform.position.x, cameraTarget.transform.position.y + offsetHeight, cameraTarget.transform.position.z - offsetDistance);
 		offset = new Vector3(cameraTarget.transform.position.x, cameraTarget.transform.position.y + offsetHeight, cameraTarget.transform.position.z - offsetDistance);
 	}

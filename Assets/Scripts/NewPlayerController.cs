@@ -9,7 +9,7 @@ public class NewPlayerController : MonoBehaviour {
     private Vector3 _moveDirection = Vector3.zero;
     public float moveSpeed = 5.0f;
     private Vector3 _gravity = Vector3.zero;
-    public float RotationSpeed = 250.0f;
+    public float RotationSpeed = 350.0f;
 
     public float JumpSpeed = 8.0f;
     // Use this for initialization
@@ -27,29 +27,25 @@ public class NewPlayerController : MonoBehaviour {
     }
     void SetMoveMent(float horizontal,float vertical)
     {
-        if(horizontal != 0 || vertical != 0)
+        Vector3 camForward_Dir = Vector3.Scale(Camera.main.transform.forward, new Vector3(1, 0, 1)).normalized;
+        Vector3 camRight_Dir = Vector3.Scale(Camera.main.transform.right, new Vector3(1, 0, 1)).normalized;
+        Vector3 move = vertical * camForward_Dir + horizontal * camRight_Dir;
+        if (move.magnitude > 1f)
+            move.Normalize();
+        move = transform.InverseTransformDirection(move);
+
+        float turnamout = Mathf.Atan2(move.x, move.z);
+
+        transform.Rotate(0, turnamout * RotationSpeed * Time.deltaTime , 0);
+        
+        if (_characterController.isGrounded)
         {
-            _moveDirection = new Vector3(horizontal,0f, vertical);
-            SetMoveRotate(horizontal, vertical);
+            _moveDirection = transform.forward * move.magnitude;
+            _moveDirection *= moveSpeed;
         }
-        if (!_characterController.isGrounded)
-        {
-            _moveDirection.y -= Gravity * Time.deltaTime;
-        }
+        _moveDirection.y -= Gravity * Time.deltaTime;
+        
+        _characterController.Move(_moveDirection * Time.deltaTime);
+    }
      
-
-        _characterController.Move(_moveDirection  * moveSpeed * Time.deltaTime);
-    }
-    void SetMoveRotate(float horizontal, float vertical)
-    {
-        Vector3 targetDirection = new Vector3(horizontal, 0f, vertical);
-        // Create a rotation based on this new vector assuming that up is the global y axis.  
-        Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
-
-        // Create a rotation that is an increment closer to the target rotation from the player's rotation.  
-        Quaternion newRotation = Quaternion.Lerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
-
-        // Change the players rotation to this new rotation.  
-        _characterController.transform.rotation = newRotation;
-    }
 }
