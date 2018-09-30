@@ -156,7 +156,7 @@ public class player : MonoBehaviour {
 
                 if (addjumpheight)
                 {
-                   // _moveDirection.y = JumpSpeed;
+                    _moveDirection.y = JumpSpeed;
                     addjumpheight = false;
                 }
             }
